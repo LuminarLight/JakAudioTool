@@ -29,7 +29,14 @@ namespace JakAudioTool_cmd
                 {
                     case "0":
                         {
-                            Environment.Exit(0);
+                            VagDir v = new VagDir();
+                            Console.WriteLine($"EntryCount: {v.EntryCount}");
+                            foreach (var item in v.Entries)
+                            {
+                                Console.WriteLine(item.ToString());
+                            }
+                            Console.ReadLine();
+                            //Environment.Exit(0);
                             break;
                         }
                     case "1":
