@@ -1,4 +1,4 @@
-# Jak_VAGDIR_Tool
+# JakAudioTool
 
 A command line application that can (will) handle the VAG directory of Jak and Daxter games.
 
