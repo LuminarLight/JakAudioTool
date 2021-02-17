@@ -15,15 +15,15 @@ namespace VagDirLib
         public int EntryCount { get; set; }
         public List<VagDirEntry> Entries { get; set; } = new List<VagDirEntry>();
 
-        public VagDir(string path = @"D:\PS2 ISOs\Jak and Daxter - The Precursor Legacy (En,Fr,De,Es,It) (Alt)\VAG\VAGDIR.AYB", int version = 1)
+        public VagDir(string path = "", bool outerfill = false, int version = 1)
         {
             Path = path;
             Version = version;
 
-            ReadFile();
+            if (!outerfill) ReadFile();
         }
 
-        private void ReadFile()
+        private void ReadFile() // We will handle all file-related exceptions outside the library, for now.
         {
             using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
             {
@@ -58,7 +58,7 @@ namespace VagDirLib
         public UInt32 Location { get; set; }
     }
 
-    class VagDirEntrySimple : VagDirEntry // version 1
+    public class VagDirEntrySimple : VagDirEntry // version 1
     {
         public VagDirEntrySimple(string name, UInt32 location)
         {
