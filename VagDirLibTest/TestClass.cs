@@ -10,6 +10,7 @@ namespace VagDirLibTest
         [TestMethod]
         public void TestMethod1()
         {
+
         }
     }
 }
