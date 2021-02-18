@@ -45,19 +45,8 @@ namespace JakAudioTool_cmd
                     case "1":
                         {
                             string path;
-                            bool good = false;
-                            do
-                            {
-                                Console.Write("Path to VAGDIR file: ");
-                                path = Console.ReadLine();
-                                if (File.Exists(path)) good = true;
-                                else
-                                {
-                                    Console.Write("File doesn't exist. Write 'q' if you want to turn back, write anything else if you want to continue: ");
-                                    string reply = Console.ReadLine();
-                                    if (reply == "q") goto case "";
-                                }
-                            } while (!good);
+
+                            if (!AskFilePath("VAGDIR file", out path)) goto case "";
 
                             Console.Clear();
 
@@ -77,19 +66,8 @@ namespace JakAudioTool_cmd
                         {
                             string path;
                             string outpath;
-                            bool good = false;
-                            do
-                            {
-                                Console.Write("Path to VAGDIR file: ");
-                                path = Console.ReadLine();
-                                if (File.Exists(path)) good = true;
-                                else
-                                {
-                                    Console.Write("File doesn't exist. Write 'q' if you want to turn back, write anything else if you want to continue: ");
-                                    string reply = Console.ReadLine();
-                                    if (reply == "q") goto case "";
-                                }
-                            } while (!good);
+
+                            if (!AskFilePath("VAGDIR file", out path)) goto case "";
 
                             Console.Write("Path to output file (.txt is appended): ");
                             outpath = Console.ReadLine();
@@ -122,19 +100,8 @@ namespace JakAudioTool_cmd
                         {
                             string path;
                             string outpath;
-                            bool good = false;
-                            do
-                            {
-                                Console.Write("Path to input file: ");
-                                path = Console.ReadLine();
-                                if (File.Exists(path)) good = true;
-                                else
-                                {
-                                    Console.Write("File doesn't exist. Write 'q' if you want to turn back, write anything else if you want to continue: ");
-                                    string reply = Console.ReadLine();
-                                    if (reply == "q") goto case "";
-                                }
-                            } while (!good);
+
+                            if (!AskFilePath("input text file", out path)) goto case "";
 
                             Console.Write("Path to output file: ");
                             outpath = Console.ReadLine();
@@ -167,6 +134,26 @@ namespace JakAudioTool_cmd
 
                 Console.WriteLine();
             }
+        }
+
+        private static bool AskFilePath(string inputname, out string path)
+        {
+            bool good = false;
+
+            do
+            {
+                Console.Write($"Path to {inputname}: ");
+                path = Console.ReadLine();
+                if (File.Exists(path)) good = true;
+                else
+                {
+                    Console.Write("File doesn't exist. Write 'q' if you want to turn back, write anything else if you want to continue: ");
+                    string reply = Console.ReadLine();
+                    if (reply == "q") return false; // User wants to quit, return false.
+                }
+            } while (!good);
+
+            return true; // File asking was successful.
         }
     }
 }

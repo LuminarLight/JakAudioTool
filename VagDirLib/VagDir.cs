@@ -74,6 +74,12 @@ namespace VagDirLib
                 }
             }
         }
+
+        private string StringToLength(string s, int length)
+        {
+            if (s.Length > length) return s.Substring(0, length);
+            else return s.PadRight(length);
+        }
     }
 
     /*class VAGDIR_EntryAdvanced // Not sure how it knows whether it is in a language VAGWAD or the INT VAGWAD, but I believe it won't be hard to figure out once we know the rest.
@@ -107,7 +113,7 @@ namespace VagDirLib
     {
         public VagDirEntrySimple(string name, UInt32 location)
         {
-            Name = name;
+            Name = name.Trim();
             Location = location;
         }
 
