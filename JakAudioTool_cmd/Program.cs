@@ -63,7 +63,7 @@ namespace JakAudioTool_cmd
 
                             VagDir v = new VagDir(path);
 
-                            Console.WriteLine($"EntryCount: {v.EntryCount}");
+                            Console.WriteLine($"EntryCount: {v.Entries.Count}");
                             foreach (var item in v.Entries)
                             {
                                 Console.WriteLine(item.ToString());
@@ -91,21 +91,19 @@ namespace JakAudioTool_cmd
                                 }
                             } while (!good);
 
-                            Console.Write("Path to output file (+.txt): ");
+                            Console.Write("Path to output file (.txt is appended): ");
                             outpath = Console.ReadLine();
+
+                            bool simple = false;
+                            Console.Write("Do you want simple output? Write 'y' if yes, anything else if no: ");
+                            string simplereply = Console.ReadLine();
+                            if (simplereply == "y") simple = true; ;
 
                             VagDir v = new VagDir(path);
 
                             try
                             {
-                                using (StreamWriter sw = new StreamWriter(outpath + ".txt"))
-                                {
-                                    sw.WriteLine($"EntryCount: {v.EntryCount}");
-                                    foreach (var item in v.Entries)
-                                    {
-                                        sw.WriteLine(item.ToString());
-                                    }
-                                }
+                                v.GenerateTextFile(outpath + ".txt", simple);
                             }
                             catch
                             {
@@ -141,41 +139,11 @@ namespace JakAudioTool_cmd
                             Console.Write("Path to output file: ");
                             outpath = Console.ReadLine();
 
-                            VagDir v = new VagDir(outerfill: true);
+                            VagDir v = new VagDir(path, textsource: true);
 
                             try
                             {
-                                using (StreamReader sr = new StreamReader(path))
-                                {
-                                    while (!sr.EndOfStream)
-                                    {
-                                        string[] line = sr.ReadLine().Split(';');
-                                        if (line[0].Length != 8)
-                                        {
-                                            Console.WriteLine("String length must always be 8. Aborting process...");
-                                            goto case "";
-                                        }
-                                        v.Entries.Add(new VagDirEntrySimple(line[0], Convert.ToUInt32(line[1])));
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                Console.WriteLine("There was an error during reading the input file. There may be problems with the output file after this.");
-                            }
-                            v.EntryCount = v.Entries.Count;
-
-                            try
-                            {
-                                using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outpath)))
-                                {
-                                    bw.Write(v.EntryCount);
-                                    foreach (var item in v.Entries)
-                                    {
-                                        bw.Write(item.Name);
-                                        bw.Write(item.Location);
-                                    }
-                                }
+                                v.GenerateVagDirFile(outpath);
                             }
                             catch
                             {

@@ -12,27 +12,65 @@ namespace VagDirLib
         public string Path { get; set; }
         public int Version { get; set; }
 
-        public int EntryCount { get; set; }
+        //public int EntryCount { get; set; } // The List below has its own count property, we are going to use that.
         public List<VagDirEntry> Entries { get; set; } = new List<VagDirEntry>();
 
-        public VagDir(string path = "", bool outerfill = false, int version = 1)
+        public VagDir(string path, int version = 1, bool textsource = false)
         {
             Path = path;
             Version = version;
 
-            if (!outerfill) ReadFile();
+            if (!textsource) ReadVagDirFile();
+            else ReadTextFile();
         }
 
-        private void ReadFile() // We will handle all file-related exceptions outside the library, for now.
+        private void ReadVagDirFile() // All the file-related operations will return an "error code" integer, in the future.
         {
             using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
             {
-                EntryCount = br.ReadInt32();
+                int count = br.ReadInt32();
 
-                for (int i = 0; i < EntryCount; i++)
+                for (int i = 0; i < count; i++)
                 {
                     byte[] namebytes = br.ReadBytes(8);
                     Entries.Add(new VagDirEntrySimple(Encoding.UTF8.GetString(namebytes), br.ReadUInt32()));
+                }
+            }
+        }
+
+        private void ReadTextFile() // name (8 chars);length (base 10 integer number)
+        {
+            using (StreamReader sr = new StreamReader(Path))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string[] line = sr.ReadLine().Split(';');
+                    Entries.Add(new VagDirEntrySimple(line[0], Convert.ToUInt32(line[1])));
+                }
+            }
+        }
+
+        public void GenerateVagDirFile(string outpath)
+        {
+            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outpath)))
+            {
+                bw.Write(Entries.Count);
+                foreach (var item in Entries)
+                {
+                    bw.Write(Encoding.UTF8.GetBytes(item.Name));
+                    bw.Write(item.Location);
+                }
+            }
+        }
+
+        public void GenerateTextFile(string outpath, bool simple)
+        {
+            using (StreamWriter sw = new StreamWriter(outpath))
+            {
+                if (!simple) sw.WriteLine($"EntryCount: {Entries.Count}");
+                foreach (var item in Entries)
+                {
+                    sw.WriteLine(item.ToString(simple));
                 }
             }
         }
@@ -56,6 +94,13 @@ namespace VagDirLib
     {
         public string Name { get; set; }
         public UInt32 Location { get; set; }
+
+        public override string ToString()
+        {
+            return ToString(false);
+        }
+
+        public abstract string ToString(bool simple);
     }
 
     public class VagDirEntrySimple : VagDirEntry // version 1
@@ -66,9 +111,10 @@ namespace VagDirLib
             Location = location;
         }
 
-        public override string ToString()
+        public override string ToString(bool simple)
         {
-            return $"{Name} @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
+            if (simple) return $"{Name};{Location}";
+            else return $"{Name} @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
         }
     }
 }
