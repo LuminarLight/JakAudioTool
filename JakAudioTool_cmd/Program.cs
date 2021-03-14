@@ -45,12 +45,15 @@ namespace JakAudioTool_cmd
                     case "1":
                         {
                             string path;
+                            int version;
 
                             if (!AskFilePath("VAGDIR file", out path)) goto case "";
 
+                            if (!AskVersion(out version)) goto case "";
+
                             Console.Clear();
 
-                            VagDir v = new VagDir(path);
+                            VagDir v = new VagDir(path, version);
 
                             Console.WriteLine($"EntryCount: {v.Entries.Count}");
                             foreach (var item in v.Entries)
@@ -66,8 +69,11 @@ namespace JakAudioTool_cmd
                         {
                             string path;
                             string outpath;
+                            int version;
 
                             if (!AskFilePath("VAGDIR file", out path)) goto case "";
+
+                            if (!AskVersion(out version)) goto case "";
 
                             Console.Write("Path to output file (.txt is appended): ");
                             outpath = Console.ReadLine();
@@ -77,7 +83,7 @@ namespace JakAudioTool_cmd
                             string simplereply = Console.ReadLine();
                             if (simplereply == "y") simple = true; ;
 
-                            VagDir v = new VagDir(path);
+                            VagDir v = new VagDir(path, version);
 
                             try
                             {
@@ -109,11 +115,11 @@ namespace JakAudioTool_cmd
 
                             if (!AskVersion(out version)) goto case "";
 
-                            VagDir v = new VagDir(path, textsource: true);
+                            VagDir v = new VagDir(path, version, textsource: true);
 
                             try
                             {
-                                v.GenerateVagDirFile(outpath, version);
+                                v.GenerateVagDirFile(outpath);
                             }
                             catch
                             {

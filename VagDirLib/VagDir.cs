@@ -15,7 +15,7 @@ namespace VagDirLib
         //public int EntryCount { get; set; } // The List below has its own count property, we are going to use that.
         public List<VagDirEntry> Entries { get; set; } = new List<VagDirEntry>();
 
-        public VagDir(string path, int version = 1, bool textsource = false)
+        public VagDir(string path, int version, bool textsource = false)
         {
             Path = path;
             Version = version;
@@ -26,15 +26,47 @@ namespace VagDirLib
 
         private void ReadVagDirFile() // All the file-related operations will return an "error code" integer, in the future.
         {
-            using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
+            switch (Version)
             {
-                int count = br.ReadInt32();
+                case 1:
+                    {
+                        using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
+                        {
+                            int count = br.ReadInt32();
 
-                for (int i = 0; i < count; i++)
-                {
-                    byte[] namebytes = br.ReadBytes(8);
-                    Entries.Add(new VagDirEntryV1(Encoding.UTF8.GetString(namebytes), br.ReadUInt32()));
-                }
+                            for (int i = 0; i < count; i++)
+                            {
+                                byte[] namebytes = br.ReadBytes(8);
+                                Entries.Add(new VagDirEntryV1(Encoding.UTF8.GetString(namebytes), br.ReadUInt32()));
+                            }
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
+                        {
+                            int count = br.ReadInt32();
+
+                            br.BaseStream.Position = 0;
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                int stereo = br.ReadInt32();
+                                byte[] namebytes = br.ReadBytes(8);
+                                Entries.Add(new VagDirEntryV2(Encoding.UTF8.GetString(namebytes), br.ReadUInt32(), Convert.ToBoolean(stereo)));
+                            }
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
@@ -50,9 +82,9 @@ namespace VagDirLib
             }
         }
 
-        public void GenerateVagDirFile(string outpath, int version)
+        public void GenerateVagDirFile(string outpath)
         {
-            switch (version)
+            switch (Version)
             {
                 case 1:
                     {
@@ -151,7 +183,7 @@ namespace VagDirLib
 
         public override string ToString(bool simple)
         {
-            if (simple) return $"{Name};{Location}";
+            if (simple) return $"{Stereo};{Name};{Location}";
             else return $"{Name} @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
         }
     }
@@ -169,7 +201,7 @@ namespace VagDirLib
 
         public override string ToString(bool simple)
         {
-            if (simple) return $"{Name};{Location}";
+            if (simple) return $"{Stereo};{Name};{Location}";
             else return $"{Name} ({(Stereo ? "Stereo" : "Mono")}) @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
         }
     }
@@ -186,7 +218,7 @@ namespace VagDirLib
 
         public override string ToString(bool simple)
         {
-            if (simple) return $"{Name};{Location}";
+            if (simple) return $"{Stereo};{Name};{Location}";
             else return $"{Name} ({(Stereo ? "Stereo" : "Mono")}) @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
         }
     }
