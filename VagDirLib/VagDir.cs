@@ -50,16 +50,46 @@ namespace VagDirLib
             }
         }
 
-        public void GenerateVagDirFile(string outpath)
+        public void GenerateVagDirFile(string outpath, int version = 1)
         {
-            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outpath)))
+            switch (version)
             {
-                bw.Write(Entries.Count);
-                foreach (var item in Entries)
-                {
-                    bw.Write(Encoding.UTF8.GetBytes(item.Name));
-                    bw.Write(item.Location);
-                }
+                case 1:
+                    {
+                        using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outpath)))
+                        {
+                            bw.Write(Entries.Count);
+                            foreach (var item in Entries)
+                            {
+                                bw.Write(Encoding.UTF8.GetBytes(item.Name));
+                                bw.Write(item.Location);
+                            }
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(outpath)))
+                        {
+                            foreach (var item in Entries)
+                            {
+                                bw.Write(Convert.ToInt32(item.Stereo));
+                                bw.Write(Encoding.UTF8.GetBytes(item.Name));
+                                bw.Write(item.Location);
+                            }
+                            bw.Seek(0, SeekOrigin.Begin);
+                            bw.Write(Entries.Count);
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
@@ -126,7 +156,8 @@ namespace VagDirLib
         }
     }
 
-    // first entry is count (4 bytes), entries after that are 1 for stereo or 0 for mono;name (8 bytes);location (*0x800)
+    // First entry is entry count (4 bytes), entries after that are 1 for stereo or 0 for mono;name (8 bytes);location (*0x800)
+    // Entry count overlaps with stereoness of first entry. Weird, need to study this.
     public class VagDirEntryV2 : VagDirEntry // version 2 (II)
     {
         public VagDirEntryV2(string name, UInt32 location, bool stereo)
