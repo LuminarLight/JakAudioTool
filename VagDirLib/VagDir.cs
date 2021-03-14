@@ -33,7 +33,7 @@ namespace VagDirLib
                 for (int i = 0; i < count; i++)
                 {
                     byte[] namebytes = br.ReadBytes(8);
-                    Entries.Add(new VagDirEntrySimple(Encoding.UTF8.GetString(namebytes), br.ReadUInt32()));
+                    Entries.Add(new VagDirEntryV1(Encoding.UTF8.GetString(namebytes), br.ReadUInt32()));
                 }
             }
         }
@@ -45,7 +45,7 @@ namespace VagDirLib
                 while (!sr.EndOfStream)
                 {
                     string[] line = sr.ReadLine().Split(';');
-                    Entries.Add(new VagDirEntrySimple(line[0], Convert.ToUInt32(line[1])));
+                    Entries.Add(new VagDirEntryV1(line[0], Convert.ToUInt32(line[1])));
                 }
             }
         }
@@ -109,9 +109,9 @@ namespace VagDirLib
         public abstract string ToString(bool simple);
     }
 
-    public class VagDirEntrySimple : VagDirEntry // version 1
+    public class VagDirEntryV1 : VagDirEntry // version 1 (TPL)
     {
-        public VagDirEntrySimple(string name, UInt32 location)
+        public VagDirEntryV1(string name, UInt32 location)
         {
             Name = name.Trim();
             Location = location;
