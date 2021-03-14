@@ -110,7 +110,7 @@ namespace JakAudioTool_cmd
 
                             try
                             {
-                                v.GenerateVagDirFile(outpath);
+                                v.GenerateVagDirFile(outpath, 2);
                             }
                             catch
                             {
@@ -154,6 +154,27 @@ namespace JakAudioTool_cmd
             } while (!good);
 
             return true; // File asking was successful.
+        }
+
+        private static bool AskVersion(out int version)
+        {
+            bool good = false;
+            string ver;
+
+            do
+            {
+                Console.Write($"Version: ");
+                ver = Console.ReadLine();
+                if (Int32.TryParse(ver, out version) && version > 0 && version < 4) good = true;
+                else
+                {
+                    Console.Write("That is an invalid version (must be 1-3). Write 'q' if you want to turn back, write anything else if you want to continue: ");
+                    string reply = Console.ReadLine();
+                    if (reply == "q") return false; // User wants to quit, return false.
+                }
+            } while (!good);
+
+            return true; // Version asking was successful.
         }
     }
 }

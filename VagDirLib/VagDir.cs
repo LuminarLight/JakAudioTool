@@ -61,7 +61,7 @@ namespace VagDirLib
                             bw.Write(Entries.Count);
                             foreach (var item in Entries)
                             {
-                                bw.Write(Encoding.UTF8.GetBytes(item.Name));
+                                bw.Write(Encoding.UTF8.GetBytes(item.Name.PadRight(8, ' ')));
                                 bw.Write(item.Location);
                             }
                         }
@@ -74,7 +74,7 @@ namespace VagDirLib
                             foreach (var item in Entries)
                             {
                                 bw.Write(Convert.ToInt32(item.Stereo));
-                                bw.Write(Encoding.UTF8.GetBytes(item.Name));
+                                bw.Write(Encoding.UTF8.GetBytes(item.Name.PadRight(8, ' ')));
                                 bw.Write(item.Location);
                             }
                             bw.Seek(0, SeekOrigin.Begin);
