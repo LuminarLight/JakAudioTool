@@ -116,6 +116,7 @@ namespace VagDirLib
         {
             Name = name.Trim();
             Location = location;
+            Stereo = false;
         }
 
         public override string ToString(bool simple)
@@ -128,10 +129,11 @@ namespace VagDirLib
     // first entry is count (4 bytes), entries after that are 1 for stereo or 0 for mono;name (8 bytes);location (*0x800)
     public class VagDirEntryV2 : VagDirEntry // version 2 (II)
     {
-        public VagDirEntryV2(string name, UInt32 location)
+        public VagDirEntryV2(string name, UInt32 location, bool stereo)
         {
             Name = name.Trim();
             Location = location;
+            Stereo = stereo;
         }
 
         public override string ToString(bool simple)
@@ -144,16 +146,17 @@ namespace VagDirLib
     // Placeholder
     public class VagDirEntryV3 : VagDirEntry // version 3 (3, maybe X?)
     {
-        public VagDirEntryV3(string name, UInt32 location)
+        public VagDirEntryV3(string name, UInt32 location, bool stereo)
         {
             Name = name.Trim();
             Location = location;
+            Stereo = stereo;
         }
 
         public override string ToString(bool simple)
         {
             if (simple) return $"{Name};{Location}";
-            else return $"{Name} @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
+            else return $"{Name} ({(Stereo ? "Stereo" : "Mono")}) @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
         }
     }
 }
