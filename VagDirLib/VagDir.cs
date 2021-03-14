@@ -50,7 +50,7 @@ namespace VagDirLib
             }
         }
 
-        public void GenerateVagDirFile(string outpath, int version = 1)
+        public void GenerateVagDirFile(string outpath, int version)
         {
             switch (version)
             {

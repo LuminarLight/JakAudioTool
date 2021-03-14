@@ -100,17 +100,20 @@ namespace JakAudioTool_cmd
                         {
                             string path;
                             string outpath;
+                            int version;
 
                             if (!AskFilePath("input text file", out path)) goto case "";
 
                             Console.Write("Path to output file: ");
                             outpath = Console.ReadLine();
 
+                            if (!AskVersion(out version)) goto case "";
+
                             VagDir v = new VagDir(path, textsource: true);
 
                             try
                             {
-                                v.GenerateVagDirFile(outpath, 2);
+                                v.GenerateVagDirFile(outpath, version);
                             }
                             catch
                             {
