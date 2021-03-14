@@ -61,6 +61,20 @@ namespace VagDirLib
                     }
                 case 3:
                     {
+                        using (BinaryReader br = new BinaryReader(File.Open(Path, FileMode.Open)))
+                        {
+                            br.ReadBytes(8); // VGWADDIR
+                            br.ReadInt32(); // 2 in Jak 3, idk
+                            int count = br.ReadInt32();
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                byte[] namebytes = br.ReadBytes(4);
+                                byte[] idk = br.ReadBytes(2);
+
+                                Entries.Add(new VagDirEntryV3(Encoding.UTF8.GetString(namebytes), br.ReadUInt16(), true, false));
+                            }
+                        }
                         break;
                     }
                 default:
@@ -171,25 +185,12 @@ namespace VagDirLib
         }
     }
 
-    /*class VAGDIR_EntryAdvanced // Not sure how it knows whether it is in a language VAGWAD or the INT VAGWAD, but I believe it won't be hard to figure out once we know the rest.
-    {
-        public VAGDIR_EntryAdvanced(int unknown, UInt16 unknown2, UInt16 location)
-        {
-            Unknown = unknown;
-            Unknown2 = unknown2;
-            Location = location;
-        }
-
-        public int Unknown { get; } // This could be the name but I did the math and it seems to be impossible to store a length 8 string in 4 bytes...
-        public UInt16 Unknown2 { get; } // these 2 bytes seem to have some kind of pattern...
-        public UInt16 Location { get; } // multiply this by 0x8000 to get the audio's position in the VAGWAD files
-    }*/
-
     public abstract class VagDirEntry
     {
         public bool Stereo { get; set; }
         public string Name { get; set; }
         public UInt32 Location { get; set; }
+        public bool InInt { get; set; }
 
         public override string ToString()
         {
@@ -206,6 +207,7 @@ namespace VagDirLib
             Name = name.Trim();
             Location = location;
             Stereo = false;
+            InInt = false;
         }
 
         public override string ToString(bool simple)
@@ -224,6 +226,7 @@ namespace VagDirLib
             Name = name.Trim();
             Location = location;
             Stereo = stereo;
+            InInt = false;
         }
 
         public override string ToString(bool simple)
@@ -233,20 +236,34 @@ namespace VagDirLib
         }
     }
 
+    /*class VAGDIR_EntryAdvanced // Not sure how it knows whether it is in a language VAGWAD or the INT VAGWAD, but I believe it won't be hard to figure out once we know the rest.
+{
+    public VAGDIR_EntryAdvanced(int unknown, UInt16 unknown2, UInt16 location)
+    {
+        Unknown = unknown;
+        Unknown2 = unknown2;
+        Location = location;
+    }
+
+    public int Unknown { get; } // This could be the name but I did the math and it seems to be impossible to store a length 8 string in 4 bytes...
+    public UInt16 Unknown2 { get; } // these 2 bytes seem to have some kind of pattern...
+    public UInt16 Location { get; } // multiply this by 0x8000 to get the audio's position in the VAGWAD files
+}*/
     // Placeholder
     public class VagDirEntryV3 : VagDirEntry // version 3 (3, maybe X?)
     {
-        public VagDirEntryV3(string name, UInt32 location, bool stereo)
+        public VagDirEntryV3(string name, UInt32 location, bool stereo, bool inint)
         {
             Name = name.Trim();
             Location = location;
             Stereo = stereo;
+            InInt = inint;
         }
 
         public override string ToString(bool simple)
         {
-            if (simple) return $"{Stereo};{Name};{Location}";
-            else return $"{Name} ({(Stereo ? "Stereo" : "Mono")}) @ 0x{Location:X} (0x{Location * 0x800:X} in file)";
+            if (simple) return $"{Stereo};{Name};{Location};{InInt}";
+            else return $"{Name} ({(Stereo ? "Stereo" : "Mono")}) @ 0x{Location:X} (0x{Location * 0x8000:X} in file) | {(InInt ? "INT" : "lang")}";
         }
     }
 }
