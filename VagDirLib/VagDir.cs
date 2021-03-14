@@ -70,15 +70,42 @@ namespace VagDirLib
             }
         }
 
-        private void ReadTextFile() // name (8 chars);length (base 10 integer number)
+        private void ReadTextFile() // stereo bool;name (8 chars);length (base 10 integer number)
         {
-            using (StreamReader sr = new StreamReader(Path))
+            switch (Version)
             {
-                while (!sr.EndOfStream)
-                {
-                    string[] line = sr.ReadLine().Split(';');
-                    Entries.Add(new VagDirEntryV1(line[0], Convert.ToUInt32(line[1])));
-                }
+                case 1:
+                    {
+                        using (StreamReader sr = new StreamReader(Path))
+                        {
+                            while (!sr.EndOfStream)
+                            {
+                                string[] line = sr.ReadLine().Split(';');
+                                Entries.Add(new VagDirEntryV1(line[1], Convert.ToUInt32(line[2])));
+                            }
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        using (StreamReader sr = new StreamReader(Path))
+                        {
+                            while (!sr.EndOfStream)
+                            {
+                                string[] line = sr.ReadLine().Split(';');
+                                Entries.Add(new VagDirEntryV2(line[1], Convert.ToUInt32(line[2]), Convert.ToBoolean(line[0])));
+                            }
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
             }
         }
 
