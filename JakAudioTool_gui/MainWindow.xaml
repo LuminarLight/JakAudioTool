@@ -12,12 +12,14 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <TextBox Height="23" TextWrapping="Wrap" Text="TextBox"/>
-
+            <Label Content="Input VAGDIR:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox TextWrapping="Wrap" Text=""/>
+            <Button Content="button"></Button>
         </StackPanel>
         <StackPanel Grid.Column="1">
-            <TextBox Height="23" TextWrapping="Wrap" Text="TextBox"/>
-
+            <Label Content="Output file (+.txt):" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox TextWrapping="Wrap" Text=""/>
         </StackPanel>
+        
     </Grid>
 </Window>
