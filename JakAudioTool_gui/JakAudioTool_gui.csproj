@@ -94,5 +94,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VagDirLib\VagDirLib.csproj">
+      <Project>{808ced56-5316-4b75-8f16-e858f463312e}</Project>
+      <Name>VagDirLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
