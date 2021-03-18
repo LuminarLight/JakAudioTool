@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VagDirLibTest", "VagDirLibT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JakAudioTool_cmd", "JakAudioTool_cmd\JakAudioTool_cmd.csproj", "{811E41D3-D8BF-4A50-83AF-4AD9947576CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JakAudioTool_gui", "JakAudioTool_gui\JakAudioTool_gui.csproj", "{79237108-C8C5-4431-B6BA-E44454557AE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{811E41D3-D8BF-4A50-83AF-4AD9947576CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811E41D3-D8BF-4A50-83AF-4AD9947576CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811E41D3-D8BF-4A50-83AF-4AD9947576CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79237108-C8C5-4431-B6BA-E44454557AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79237108-C8C5-4431-B6BA-E44454557AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79237108-C8C5-4431-B6BA-E44454557AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79237108-C8C5-4431-B6BA-E44454557AE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
